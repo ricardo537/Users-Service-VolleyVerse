@@ -1,0 +1,56 @@
+package com.volleyverse.users_service.test_repositories.user_repository;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+@DataJpaTest
+class searchUserTest {
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	private User user;
+	
+	@BeforeEach
+	void setUp() {
+		this.user = new User(null, "johndoe@example.com", "JohnDoe1!", "John Doe");//Cuando se haya creado el modelo se creará una instancia con los datos de johndoe@example.com JohnDoe1! John Doe
+		userRepository.save(this.user);
+	}
+
+	@Test
+	void findByEmail_foundSuccess() {
+		Optional<User> userFound = this.userRepository.findByEmail("johndoe@example.com");
+		
+		assertTrue(userFound.isPresent());
+		assertEquals("John Doe", userFound.get().getName());
+	}
+	
+	@Test
+	void findByEmail_notFoundSuccess() {
+		Optional<User> userFound = this.userRepository.findByEmail("samlas@example.com");
+		
+		assertFalse(userFound.isPresent());
+	}
+	
+	@Test
+	void findByEmailAndPassword_foundSuccess() {
+		Optional<User> userFound = this.userRepository.findByEmailAndPassword("johndoe@example.com", "JohnDoe1!");
+		
+		assertTrue(userFound.isPresent());
+		assertEquals("John Doe", userFound.get().getName());
+	}
+	
+	@Test
+	void findByEmailAndPassword_notFoundSuccess() {
+		Optional<User> userFound = this.userRepository.findByEmailAndPassword("johndoe@example.com", "SamLas1!");
+		
+		assertFalse(userFound.isPresent());
+	}
+
+}
