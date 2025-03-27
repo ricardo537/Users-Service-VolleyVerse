@@ -80,7 +80,7 @@ class SaveUserTest {
         	userSaved1.setEmail("samlas@example.com");
         	assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(userSaved1));
         } else {
-        	fail();
+        	fail("The second user don't be save");
         }
     }
     
