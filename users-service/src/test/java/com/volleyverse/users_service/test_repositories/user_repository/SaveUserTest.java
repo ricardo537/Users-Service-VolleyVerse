@@ -9,11 +9,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
 /**
- * The tests will be name with this structure: nameMethod_functionalitySuccess or nameMethod_functionalitySuccess¿Why?
+ * The tests will be name with this structure: nameMethod_functionalitySuccess or nameMethod_functionalityFailure¿Why?
  * This class will verify that the methods of saving users will work in the following situations:
+ * @author Ricardo Marín Esteban
+ * @version 1.0
+ * @since 2025
  */
 @DataJpaTest
-class saveUserTest {
+class SaveUserTest {
 	
     @Autowired
     private UserRepository userRepository;
