@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.volleyverse.users_service.entity.User;
+import com.volleyverse.users_service.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
+
 /**
  * The tests will be name with this structure: nameMethod_functionalitySuccess or nameMethod_functionalityFailure¿Why?
  * This class will verify that the methods of saving users will work in the following situations:
@@ -15,6 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException;
  * @version 1.0
  * @since 2025
  */
+@Transactional
 @DataJpaTest
 class SaveUserTest {
 	
@@ -35,7 +41,7 @@ class SaveUserTest {
      */
     @Test
     void save_savedSuccess() {
-        User user = new User(null, "johndoe@example.com", "JohnDoe1!", "John Doe");
+        User user = new User("johndoe@example.com", "JohnDoe1!", "John Doe");
         
         User savedUser = userRepository.save(user);
         
@@ -49,7 +55,7 @@ class SaveUserTest {
      */
     @Test
     void save_updatedSuccess() {
-        User user = new User(null, "johndoe@example.com", "JohnDoe1!", "John Doe");
+        User user = new User("johndoe@example.com", "JohnDoe1!", "John Doe");
         User savedUser = userRepository.save(user);
         
         savedUser.setName("Sam Las");
@@ -64,14 +70,18 @@ class SaveUserTest {
      */
     @Test
     void save_updatedFailureEmailAlreadyExists() {
-        User user1 = new User(null, "johndoe@example.com", "JohnDoe1!", "John Doe");
-        User user2 = new User(null, "samlas@example.com", "JohnDoe1!", "Sam Las");
-        userRepository.save(user1);
-        userRepository.save(user2);
+        User user1 = new User("johndoe@example.com", "JohnDoe1!", "John Doe");
+        User user2 = new User("samlas@example.com", "SamLas1!", "Sam Las");
         
-        user1.setEmail("samlas@example.com");
-
-        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(user1));
+        User userSaved1 = this.userRepository.save(user1);
+        User userSaved2 = this.userRepository.save(user2);
+        
+        if (user2.getId() != null) {
+        	userSaved1.setEmail("samlas@example.com");
+        	assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(userSaved1));
+        } else {
+        	fail();
+        }
     }
     
     /**
@@ -79,10 +89,10 @@ class SaveUserTest {
      */
     @Test
     void save_savedFailureEmailAlreadyExists() {
-        User user1 = new User(null, "johndoe@example.com", "JohnDoe1!", "John Doe");
+    	User user1 = new User("johndoe@example.com", "JohnDoe1!", "John Doe");
         userRepository.save(user1);
 
-        User user2 = new User(null, "johndoe@example.com", "SamLas1!!", "Sam Las");
+        User user2 = new User("johndoe@example.com", "SamLas1!!", "Sam Las");
 
         assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(user2));
     }

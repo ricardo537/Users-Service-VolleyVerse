@@ -14,8 +14,11 @@ public class AuthServiceImp implements AuthService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	public AuthServiceImp(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
 	
 	public String register(UserRegisterRequest userRegisterRequest) {
 		return "";

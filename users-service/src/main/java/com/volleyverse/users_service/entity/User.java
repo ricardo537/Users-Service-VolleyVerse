@@ -11,14 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name= "user")
+@Table(name= "users")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 	
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	private String email;
 	
 	@Column(nullable = false)
@@ -27,8 +27,12 @@ public class User {
 	@Column(nullable = false)
 	private String name;
 	
+	@Column(nullable = true)
 	private String description;
-	private List<String> roles;
+	
+	/*
+	@Column(nullable = true)
+	private List<String> roles;*/
 	
 	public User () {
 		
@@ -72,13 +76,13 @@ public class User {
 		this.description = description;
 	}
 
-	public List<String> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
-	}
+//	public List<String> getRoles() {
+//		return roles;
+//	}
+//
+//	public void setRoles(List<String> roles) {
+//		this.roles = roles;
+//	}
 
 	public UUID getId() {
 		return id;

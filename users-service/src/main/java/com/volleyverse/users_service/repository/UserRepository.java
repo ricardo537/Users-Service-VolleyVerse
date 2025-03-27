@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, UUID>{
 	
 	Optional<User> findByEmail(String email);
 	
+	//This method is exclusive for the test
+	void deleteByEmail(String email);
+	
 }
