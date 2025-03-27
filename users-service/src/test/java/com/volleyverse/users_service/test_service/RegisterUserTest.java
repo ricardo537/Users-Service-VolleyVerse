@@ -1,6 +1,13 @@
 package com.volleyverse.users_service.test_service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.volleyverse.users_service.dto.request.UserRegisterRequest;
+import com.volleyverse.users_service.entity.User;
 import com.volleyverse.users_service.repository.UserRepository;
 import com.volleyverse.users_service.service.imp.AuthServiceImp;
 
@@ -23,7 +31,6 @@ import com.volleyverse.users_service.service.imp.AuthServiceImp;
  * @since 2025
  */
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 class RegisterUserTest {
 	
 	@Mock
@@ -36,7 +43,6 @@ class RegisterUserTest {
 
 	@BeforeEach
 	void setUp() {
-		MockitoAnnotations.openMocks(this);
 		this.user = new UserRegisterRequest("johndoe@example.com", "JohnDoe1!", "John Doe");
 	}
 	
@@ -57,9 +63,11 @@ class RegisterUserTest {
 	
 	@Test
 	void register_registerSuccess() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		String response = authServiceImp.register(user);
 		
 		assertEquals("El usuario ha sido registrado con éxito", response);
+		verify(userRepository, times(1)).save(any(User.class));
 	}
 	
 	/** 
@@ -69,10 +77,12 @@ class RegisterUserTest {
 	
 	@Test
 	void register_registerFailureEmailWithoutAt() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoeexample.com");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("El email no es válido, por favor revíselo.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	/**
 	 * @section TestID: TUS_03
@@ -80,10 +90,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailureEmailWithoutDot() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoe@examplecom");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("El email no es válido, por favor revíselo.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -92,10 +104,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailureEmailWithoutDomain() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoe@example.");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("El email no es válido, por favor revíselo.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -104,10 +118,12 @@ class RegisterUserTest {
 	 */
 	@Test 
 	void register_registerFailureEmailWithoutName() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("@example.com");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("El email no es válido, por favor revíselo.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -116,10 +132,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailureEmailWithoutMail() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoe@.com");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("El email no es válido, por favor revíselo.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -128,11 +146,12 @@ class RegisterUserTest {
 	 */
 	@Test 
 	void register_registerFailureEmailAlreadyExists() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(new User("johndoe@example.com", "SamLas1!", "Sam Las")));
 		UserRegisterRequest user2 = new UserRegisterRequest("johndoe@example.com", "SamLas1!", "Sam Las");
-		authServiceImp.register(user);
 		String response = authServiceImp.register(user2);
 		
 		assertEquals("El email ya está en uso, por favor escoja otro.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	//This part test the password validation
@@ -151,10 +170,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordNotLongEnough() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JoD1!");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("La contraseña tiene que tener mínimo 7 caracteres.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -163,10 +184,12 @@ class RegisterUserTest {
 	 */
 	@Test 
 	void register_registerFailurePasswordWithoutNumber() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JohnDoe!");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("La contraseña tiene que tener mínimo un número.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -175,10 +198,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordWithoutMayus() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("johndoe1!");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("La contraseña tiene que tener mínimo una mayúscula.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -187,10 +212,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordWithoutMinus() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JOHNDOE1!");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("La contraseña tiene que tener mínimo una minúscula.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 	
 	/**
@@ -199,10 +226,12 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordWithoutEspecialChar() {
+		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JohnDoe1");
 		String response = authServiceImp.register(user);
 		
 		assertEquals("La contraseña tiene que tener mínimo un caracter especial.", response);
+		verify(userRepository, never()).save(any(User.class));
 	}
 
 }
