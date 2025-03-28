@@ -1,5 +1,7 @@
 package com.volleyverse.users_service.dto.request;
 
+import com.volleyverse.users_service.entity.User;
+
 public class UserRegisterRequest {
 
 	private String email;
@@ -14,6 +16,10 @@ public class UserRegisterRequest {
 		this.email = email;
 		this.password = password;
 		this.name = name;
+	}
+	
+	public User toUser() {
+		return new User(this.email, this.password, this.name);
 	}
 
 	public String getEmail() {

@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.volleyverse.users_service.dto.request.UserRegisterRequest;
 import com.volleyverse.users_service.entity.User;
@@ -35,6 +36,9 @@ class RegisterUserTest {
 	
 	@Mock
 	private UserRepository userRepository;
+	
+	@Mock
+	private PasswordEncoder passwordEncoder;
 	
 	@InjectMocks
 	private AuthServiceImp authServiceImp;
@@ -66,7 +70,7 @@ class RegisterUserTest {
 		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		String response = authServiceImp.register(user);
 		
-		assertEquals("El usuario ha sido registrado con éxito", response);
+		assertEquals("El usuario ha sido registrado con éxito.", response);
 		verify(userRepository, times(1)).save(any(User.class));
 	}
 	
@@ -77,7 +81,6 @@ class RegisterUserTest {
 	
 	@Test
 	void register_registerFailureEmailWithoutAt() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoeexample.com");
 		String response = authServiceImp.register(user);
 		
@@ -90,7 +93,6 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailureEmailWithoutDot() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoe@examplecom");
 		String response = authServiceImp.register(user);
 		
@@ -104,7 +106,6 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailureEmailWithoutDomain() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoe@example.");
 		String response = authServiceImp.register(user);
 		
@@ -118,7 +119,6 @@ class RegisterUserTest {
 	 */
 	@Test 
 	void register_registerFailureEmailWithoutName() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("@example.com");
 		String response = authServiceImp.register(user);
 		
@@ -132,7 +132,6 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailureEmailWithoutMail() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setEmail("johndoe@.com");
 		String response = authServiceImp.register(user);
 		
@@ -147,11 +146,13 @@ class RegisterUserTest {
 	@Test 
 	void register_registerFailureEmailAlreadyExists() {
 		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(new User("johndoe@example.com", "SamLas1!", "Sam Las")));
-		UserRegisterRequest user2 = new UserRegisterRequest("johndoe@example.com", "SamLas1!", "Sam Las");
-		String response = authServiceImp.register(user2);
-		
-		assertEquals("El email ya está en uso, por favor escoja otro.", response);
-		verify(userRepository, never()).save(any(User.class));
+	    
+	    UserRegisterRequest user2 = new UserRegisterRequest("johndoe@example.com", "SamLas1!", "Sam Las");
+	    
+	    String response = authServiceImp.register(user2);
+	    
+	    assertEquals("El email ya está en uso, por favor escoja otro.", response);
+	    verify(userRepository, never()).save(any(User.class)); 
 	}
 	
 	//This part test the password validation
@@ -170,7 +171,6 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordNotLongEnough() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JoD1!");
 		String response = authServiceImp.register(user);
 		
@@ -184,7 +184,6 @@ class RegisterUserTest {
 	 */
 	@Test 
 	void register_registerFailurePasswordWithoutNumber() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JohnDoe!");
 		String response = authServiceImp.register(user);
 		
@@ -198,7 +197,6 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordWithoutMayus() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("johndoe1!");
 		String response = authServiceImp.register(user);
 		
@@ -212,7 +210,6 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordWithoutMinus() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JOHNDOE1!");
 		String response = authServiceImp.register(user);
 		
@@ -226,10 +223,9 @@ class RegisterUserTest {
 	 */
 	@Test
 	void register_registerFailurePasswordWithoutEspecialChar() {
-		when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 		user.setPassword("JohnDoe1");
 		String response = authServiceImp.register(user);
-		
+		System.out.println(response);
 		assertEquals("La contraseña tiene que tener mínimo un caracter especial.", response);
 		verify(userRepository, never()).save(any(User.class));
 	}
