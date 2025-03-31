@@ -56,7 +56,7 @@ class AuthControllerTest {
 	     mockMvc.perform(post("/volleyverse/api/auth/register")
 	        .contentType(MediaType.APPLICATION_JSON)
 	        .content(objectMapper.writeValueAsString(request))) 
-	        .andExpect(status().isOk()) 
+	        .andExpect(status().isCreated()) 
 	        .andExpect(jsonPath("$").value("El usuario ha sido registrado con éxito."));
 	}
 	
@@ -75,7 +75,7 @@ class AuthControllerTest {
 		mockMvc.perform(post("/volleyverse/api/auth/register")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(request)))
-			.andExpect(status().isOk())
+			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$").value("El email no es válido, por favor revíselo."));
 	}
 	

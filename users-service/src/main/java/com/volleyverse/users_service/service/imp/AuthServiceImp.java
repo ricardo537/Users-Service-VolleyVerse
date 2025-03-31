@@ -60,7 +60,7 @@ public class AuthServiceImp implements AuthService {
 		User userSaved = this.userRepository.save(user);
 		
 		if (userSaved != null && userSaved.getId() == null) {
-			return "No se ha podido registrar el usuario";
+			return "No se ha podido registrar el usuario.";
 		} 
 		return "El usuario ha sido registrado con éxito.";
 	}
