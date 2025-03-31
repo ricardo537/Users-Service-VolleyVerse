@@ -13,6 +13,9 @@ import com.volleyverse.users_service.service.AuthService;
 
 /**
  * This class will manage the CRUD of the user's accounts, it's responsible of transform or validate the requests data, so that in the end the repository interacts with the database when if necessary.
+ * @author Ricardo Marín Esteban
+ * @version 1.0
+ * @since 2025
  */
 @Service
 public class AuthServiceImp implements AuthService {
