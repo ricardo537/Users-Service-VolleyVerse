@@ -56,7 +56,6 @@ public class AuthServiceImp implements AuthService {
 		
 		User user = userRegisterRequest.toUser();
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		String passwordHash = passwordEncoder.encode(user.getPassword());
 		User userSaved = this.userRepository.save(user);
 		
 		if (userSaved != null && userSaved.getId() == null) {

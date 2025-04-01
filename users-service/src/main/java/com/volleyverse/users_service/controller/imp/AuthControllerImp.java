@@ -20,7 +20,7 @@ public class AuthControllerImp implements AuthController {
 	@Override
 	public ResponseEntity<String> register(UserRegisterRequest userRegisterRequest) {
 		String response = authServiceImp.register(userRegisterRequest);
-		HttpStatus status = null;
+		HttpStatus status = HttpStatus.CREATED;
 		
 		switch (response) {
 			case "El usuario ha sido registrado con éxito.": {
