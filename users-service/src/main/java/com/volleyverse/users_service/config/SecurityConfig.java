@@ -20,8 +20,14 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/volleyverse/api/auth/register", "/volleyverse/api/auth/login").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/volleyverse/api/auth/register", 
+                                		"/volleyverse/api/auth/login", 
+                                		"/volleyverse-doc/swagger-ui.html", // Ensure Swagger UI entry point is allowed
+                                        "/volleyverse-doc/swagger-ui/**", // Allow access to Swagger UI resources
+                                        "/v3/api-docs/**", // Swagger docs access
+                                        "/swagger-ui/**" // Swagger UI endpoint
+                                		).permitAll()
+                                .anyRequest().permitAll()
                 );
         return http.build();
     }
